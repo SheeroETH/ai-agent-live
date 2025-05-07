@@ -32,6 +32,14 @@ export default function AgentDashboard() {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
   const [headline, setHeadline] = useState("Web3 Gamer want to dominate the wasteland")
 
+  // Ajoutez ces états après les autres états existants
+  const [hashtags, setHashtags] = useState<string[]>([])
+  const [mentions, setMentions] = useState<string[]>([])
+  const [newHashtag, setNewHashtag] = useState("")
+  const [newMention, setNewMention] = useState("")
+  const hashtagInputRef = useRef<HTMLInputElement>(null)
+  const mentionInputRef = useRef<HTMLInputElement>(null)
+
   const traitInputRef = useRef<HTMLInputElement>(null)
   const loveInputRef = useRef<HTMLInputElement>(null)
   const hateInputRef = useRef<HTMLInputElement>(null)
@@ -120,6 +128,38 @@ export default function AgentDashboard() {
     setHates(hates.filter((_, i) => i !== index))
   }
 
+  const addHashtag = () => {
+    if (newHashtag.trim()) {
+      // Assurez-vous que le hashtag commence par #
+      const formattedHashtag = newHashtag.trim().startsWith("#") ? newHashtag.trim() : `#${newHashtag.trim()}`
+      setHashtags([...hashtags, formattedHashtag])
+      setNewHashtag("")
+      if (hashtagInputRef.current) {
+        hashtagInputRef.current.focus()
+      }
+    }
+  }
+
+  const removeHashtag = (index: number) => {
+    setHashtags(hashtags.filter((_, i) => i !== index))
+  }
+
+  const addMention = () => {
+    if (newMention.trim()) {
+      // Assurez-vous que la mention commence par @
+      const formattedMention = newMention.trim().startsWith("@") ? newMention.trim() : `@${newMention.trim()}`
+      setMentions([...mentions, formattedMention])
+      setNewMention("")
+      if (mentionInputRef.current) {
+        mentionInputRef.current.focus()
+      }
+    }
+  }
+
+  const removeMention = (index: number) => {
+    setMentions(mentions.filter((_, i) => i !== index))
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent, addFunction: () => void) => {
     if (e.key === "Enter") {
       e.preventDefault()
@@ -154,12 +194,15 @@ export default function AgentDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
           <div className="space-y-8">
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid grid-cols-2 mb-6">
+              <TabsList className="grid grid-cols-3 mb-6">
                 <TabsTrigger value="basic" className="data-[state=active]:bg-[#1DA1F2]/20">
                   Basic Info
                 </TabsTrigger>
                 <TabsTrigger value="personality" className="data-[state=active]:bg-[#1DA1F2]/20">
                   Personality
+                </TabsTrigger>
+                <TabsTrigger value="reply" className="data-[state=active]:bg-[#1DA1F2]/20">
+                  Reply
                 </TabsTrigger>
               </TabsList>
 
@@ -443,6 +486,95 @@ export default function AgentDashboard() {
                   </div>
                 </div>
               </TabsContent>
+              <TabsContent value="reply" className="space-y-8">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-gray-300">Hashtags to Reply</h3>
+                    <span className="text-xs text-gray-500">{hashtags.length} hashtags</span>
+                  </div>
+
+                  <div className="p-4 border border-[#1DA1F2]/30 rounded-lg bg-[#25262B]">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {hashtags.map((hashtag, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#2A2B30] text-sm"
+                        >
+                          {hashtag}
+                          <button onClick={() => removeHashtag(index)} className="ml-1 text-gray-400 hover:text-white">
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
+
+                      <div className="flex items-center">
+                        <Input
+                          ref={hashtagInputRef}
+                          value={newHashtag}
+                          onChange={(e) => setNewHashtag(e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(e, addHashtag)}
+                          placeholder="Add hashtag..."
+                          className="bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-8 w-24 min-w-0"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={addHashtag}
+                          className="h-6 w-6 rounded-full"
+                          disabled={!newHashtag.trim()}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-gray-300">Accounts to Reply (@mentions)</h3>
+                    <span className="text-xs text-gray-500">{mentions.length} accounts</span>
+                  </div>
+
+                  <div className="p-4 border border-[#34353A] rounded-lg bg-[#25262B]">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {mentions.map((mention, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#2A2B30] text-sm"
+                        >
+                          {mention}
+                          <button onClick={() => removeMention(index)} className="ml-1 text-gray-400 hover:text-white">
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
+
+                      <div className="flex items-center">
+                        <Input
+                          ref={mentionInputRef}
+                          value={newMention}
+                          onChange={(e) => setNewMention(e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(e, addMention)}
+                          placeholder="Add @mention..."
+                          className="bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-8 w-24 min-w-0"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={addMention}
+                          className="h-6 w-6 rounded-full"
+                          disabled={!newMention.trim()}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
 
@@ -466,7 +598,7 @@ export default function AgentDashboard() {
 
                 <Avatar className="h-20 w-20 mb-4 border-2 border-[#1DA1F2]/30">
                   {avatarSrc ? (
-                    <AvatarImage src={avatarSrc} alt={agentName} />
+                    <AvatarImage src={avatarSrc || "/placeholder.svg"} alt={agentName} />
                   ) : (
                     <AvatarFallback className="bg-[#1DA1F2]/20 text-[#1DA1F2] text-xl">
                       {agentName.charAt(0)}
@@ -542,7 +674,7 @@ export default function AgentDashboard() {
                       <div className="flex items-start gap-3">
                         <Avatar className="h-8 w-8 border border-[#1DA1F2]/30">
                           {avatarSrc ? (
-                            <AvatarImage src={avatarSrc} alt={agentName} />
+                            <AvatarImage src={avatarSrc || "/placeholder.svg"} alt={agentName} />
                           ) : (
                             <AvatarFallback className="bg-[#1DA1F2]/20 text-[#1DA1F2]">
                               {agentName.charAt(0)}
