@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import DashboardLayout from "@/components/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Edit, Trash2, CheckCircle } from "lucide-react"
+import { Edit, Trash2, CheckCircle, Key } from "lucide-react"
 
 interface Credential {
   id: string
@@ -46,7 +45,6 @@ export default function CredentialsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
     console.log("Form submitted:", formData)
   }
 
@@ -56,172 +54,191 @@ export default function CredentialsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Page Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">X Credentials</h1>
-          <p className="text-[#B0B0B0]">Add, verify, or manage your X credentials for AI Agents</p>
-        </div>
+      <div className="min-h-screen bg-[#0F0F13] flex items-center justify-center p-8">
+        <div className="w-full max-w-4xl mx-auto space-y-8">
+          {/* Page Header */}
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl font-bold text-white">X Credentials</h1>
+            <p className="text-lg text-[#CCCCCC] max-w-2xl mx-auto">
+              Add, verify, or manage your X credentials for AI Agents
+            </p>
+          </div>
 
-        {/* Add Credential Form */}
-        <Card className="bg-[#1C1C21] border-[#333339]">
-          <CardHeader>
-            <CardTitle className="text-white text-xl">Add Credential</CardTitle>
-            <p className="text-[#B0B0B0] text-sm">Fill the form to add a new credential.</p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="username" className="text-[#B0B0B0] text-sm">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    placeholder="Enter X username"
-                    value={formData.username}
-                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    className="bg-[#2A2A2E] border-[#333339] text-white placeholder:text-[#666] mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-[#B0B0B0] text-sm">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="user@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="bg-[#2A2A2E] border-[#333339] text-white placeholder:text-[#666] mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="password" className="text-[#B0B0B0] text-sm">
-                    Password
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="bg-[#2A2A2E] border-[#333339] text-white placeholder:text-[#666] mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="otpCode" className="text-[#B0B0B0] text-sm">
-                    OTP Unique Code
-                  </Label>
-                  <Input
-                    id="otpCode"
-                    placeholder="Enter OTP code"
-                    value={formData.otpCode}
-                    onChange={(e) => setFormData({ ...formData, otpCode: e.target.value })}
-                    className="bg-[#2A2A2E] border-[#333339] text-white placeholder:text-[#666] mt-1"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="cookies" className="text-[#B0B0B0] text-sm">
-                  Cookies (optional)
-                </Label>
-                <Textarea
-                  id="cookies"
-                  placeholder="Paste cookies string here"
-                  value={formData.cookies}
-                  onChange={(e) => setFormData({ ...formData, cookies: e.target.value })}
-                  className="bg-[#2A2A2E] border-[#333339] text-white placeholder:text-[#666] mt-1 h-24"
-                />
-              </div>
-
-              <div className="flex space-x-6">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="active"
-                    checked={formData.active}
-                    onCheckedChange={(checked) => setFormData({ ...formData, active: checked as boolean })}
-                    className="border-[#555559] data-[state=checked]:bg-[#407BFF] data-[state=checked]:border-[#407BFF]"
-                  />
-                  <Label htmlFor="active" className="text-white">
-                    Active?
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="useCookies"
-                    checked={formData.useCookies}
-                    onCheckedChange={(checked) => setFormData({ ...formData, useCookies: checked as boolean })}
-                    className="border-[#555559] data-[state=checked]:bg-[#407BFF] data-[state=checked]:border-[#407BFF]"
-                  />
-                  <Label htmlFor="useCookies" className="text-white">
-                    Use Cookies?
-                  </Label>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full bg-[#407BFF] hover:bg-[#5A8CFF] text-white">
-                Create
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Existing Credentials */}
-        <div className="space-y-4">
-          {credentials.length > 0 ? (
-            credentials.map((credential) => (
-              <Card key={credential.id} className="bg-[#1C1C21] border-[#333339]">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-white mb-1">{credential.username}</h3>
-                      <p className="text-[#B0B0B0] mb-3">{credential.email}</p>
-                      <div className="text-sm text-[#B0B0B0] space-x-4">
-                        <span>Active: {credential.active ? "Yes" : "No"}</span>
-                        <span>•</span>
-                        <span>Use Cookies: {credential.useCookies ? "Yes" : "No"}</span>
-                        <span>•</span>
-                        <span>Cookies: {credential.cookies.substring(0, 50)}...</span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="bg-[#333339] border-[#333339] text-white hover:bg-[#3C3C44]"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(credential.id)}
-                        className="bg-[#FF4B4B] hover:bg-[#E04343]"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" className="bg-[#407BFF] hover:bg-[#5A8CFF]">
-                        <CheckCircle className="h-4 w-4" />
-                      </Button>
-                    </div>
+          {/* Add Credential Form */}
+          <Card className="bg-[#0F0F13] border-[#333339] shadow-xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-white text-2xl">Add Credential</CardTitle>
+              <p className="text-[#CCCCCC]">Fill the form to add a new credential.</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="username" className="text-[#CCCCCC] text-sm font-medium">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      placeholder="Enter X username"
+                      value={formData.username}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      className="bg-[#1A1A1F] border-[#333339] text-white placeholder:text-[#666] h-12 focus:border-[#1DA1F2] focus:ring-[#1DA1F2]"
+                    />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-[#CCCCCC] text-sm font-medium">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="user@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="bg-[#1A1A1F] border-[#333339] text-white placeholder:text-[#666] h-12 focus:border-[#1DA1F2] focus:ring-[#1DA1F2]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-[#CCCCCC] text-sm font-medium">
+                      Password
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="bg-[#1A1A1F] border-[#333339] text-white placeholder:text-[#666] h-12 focus:border-[#1DA1F2] focus:ring-[#1DA1F2]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="otpCode" className="text-[#CCCCCC] text-sm font-medium">
+                      OTP Unique Code
+                    </Label>
+                    <Input
+                      id="otpCode"
+                      placeholder="Enter OTP code"
+                      value={formData.otpCode}
+                      onChange={(e) => setFormData({ ...formData, otpCode: e.target.value })}
+                      className="bg-[#1A1A1F] border-[#333339] text-white placeholder:text-[#666] h-12 focus:border-[#1DA1F2] focus:ring-[#1DA1F2]"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cookies" className="text-[#CCCCCC] text-sm font-medium">
+                    Cookies (optional)
+                  </Label>
+                  <Textarea
+                    id="cookies"
+                    placeholder="Paste cookies string here"
+                    value={formData.cookies}
+                    onChange={(e) => setFormData({ ...formData, cookies: e.target.value })}
+                    className="bg-[#1A1A1F] border-[#333339] text-white placeholder:text-[#666] min-h-[100px] focus:border-[#1DA1F2] focus:ring-[#1DA1F2]"
+                  />
+                </div>
+
+                <div className="flex justify-center space-x-8">
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="active"
+                      checked={formData.active}
+                      onCheckedChange={(checked) => setFormData({ ...formData, active: checked as boolean })}
+                      className="border-[#555559] data-[state=checked]:bg-[#1DA1F2] data-[state=checked]:border-[#1DA1F2]"
+                    />
+                    <Label htmlFor="active" className="text-white font-medium">
+                      Active?
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="useCookies"
+                      checked={formData.useCookies}
+                      onCheckedChange={(checked) => setFormData({ ...formData, useCookies: checked as boolean })}
+                      className="border-[#555559] data-[state=checked]:bg-[#1DA1F2] data-[state=checked]:border-[#1DA1F2]"
+                    />
+                    <Label htmlFor="useCookies" className="text-white font-medium">
+                      Use Cookies?
+                    </Label>
+                  </div>
+                </div>
+
+                <div className="flex justify-center">
+                  <Button
+                    type="submit"
+                    className="w-full max-w-md bg-gradient-to-r from-[#1DA1F2] to-[#5ab9f5] hover:from-[#0d8bd9] hover:to-[#4aa3e0] text-white font-semibold h-12 text-lg"
+                  >
+                    Create Credential
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Existing Credentials */}
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white text-center">Your X Credentials</h2>
+            {credentials.length > 0 ? (
+              <div className="space-y-4">
+                {credentials.map((credential) => (
+                  <Card
+                    key={credential.id}
+                    className="bg-[#0F0F13] border-[#333339] shadow-lg hover:border-[#1DA1F2] transition-colors"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold text-white mb-2">{credential.username}</h3>
+                          <p className="text-[#CCCCCC] mb-3">{credential.email}</p>
+                          <div className="text-sm text-[#9CA3AF] space-x-4">
+                            <span>Active: {credential.active ? "Yes" : "No"}</span>
+                            <span>•</span>
+                            <span>Use Cookies: {credential.useCookies ? "Yes" : "No"}</span>
+                            <span>•</span>
+                            <span>Cookies: {credential.cookies.substring(0, 50)}...</span>
+                          </div>
+                        </div>
+                        <div className="flex space-x-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="bg-[#1A1A1F] border-[#333339] text-white hover:bg-[#2A2A2F] hover:border-[#1DA1F2]"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(credential.id)}
+                            className="bg-[#DC2626] hover:bg-[#B91C1C]"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-[#1DA1F2] to-[#5ab9f5] hover:from-[#0d8bd9] hover:to-[#4aa3e0]"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="bg-[#0F0F13] border-[#333339] shadow-lg">
+                <CardContent className="p-12 text-center">
+                  <Key className="h-16 w-16 text-[#666] mx-auto mb-4" />
+                  <p className="text-white text-xl mb-2">No X credentials added.</p>
+                  <p className="text-[#CCCCCC] mb-6">Use the form above to add a credential.</p>
+                  <Button variant="link" className="text-[#1DA1F2] hover:text-[#5ab9f5] text-lg">
+                    View Documentation
+                  </Button>
                 </CardContent>
               </Card>
-            ))
-          ) : (
-            <Card className="bg-[#1C1C21] border-[#333339]">
-              <CardContent className="p-12 text-center">
-                <p className="text-white text-lg mb-2">No X credentials added.</p>
-                <p className="text-[#B0B0B0] mb-4">Use the form above to add a credential.</p>
-                <Button variant="link" className="text-[#407BFF] hover:text-[#5A8CFF]">
-                  View Documentation
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </DashboardLayout>

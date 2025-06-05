@@ -51,6 +51,11 @@ export default function Header() {
     }
   }
 
+  // Don't show header on dashboard pages
+  if (pathname?.startsWith("/dashboard")) {
+    return null
+  }
+
   return (
     <motion.header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -63,9 +68,7 @@ export default function Header() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className={`text-2xl font-bold gradient-text-mixed neon-glow-blue ${
-              pathname === "/agent" || pathname === "/publish-agent" ? "hidden" : ""
-            }`}
+            className="text-2xl font-bold gradient-text-mixed neon-glow-blue"
           >
             Tweezy
           </motion.div>
@@ -129,9 +132,9 @@ export default function Header() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/agent" className="cursor-pointer">
+                  <Link href="/dashboard" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    <span>My Agents</span>
+                    <span>Dashboard</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -142,23 +145,20 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            pathname !== "/sign-in" &&
-            pathname !== "/sign-up" && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Link href="/sign-in">
-                  <Button
-                    size="sm"
-                    className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-              </motion.div>
-            )
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Link href="/sign-in">
+                <Button
+                  size="sm"
+                  className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
+                >
+                  Sign In
+                </Button>
+              </Link>
+            </motion.div>
           )}
 
           {/* Mobile Navigation Toggle */}
@@ -220,6 +220,11 @@ export default function Header() {
                         <p className="text-xs text-gray-400">{user.email}</p>
                       </div>
                     </div>
+                    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity mb-2">
+                        Dashboard
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       className="border-[#1DA1F2]/30 text-[#1DA1F2] hover:bg-[#1DA1F2]/10"
