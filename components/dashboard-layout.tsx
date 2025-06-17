@@ -28,10 +28,23 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
-  const { user, signOut } = useAuth()
+  const { user, signOut, isLoading } = useAuth()
 
   const handleSignOut = async () => {
-    await signOut()
+    try {
+      await signOut()
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
+  }
+
+  // Show loading state while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0F0F13] flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
   }
 
   return (
@@ -47,39 +60,70 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src={user?.user_metadata?.avatar_url || "/placeholder.svg"} alt={user?.email || ""} />
-                  <AvatarFallback className="bg-[#1DA1F2]/20 text-[#1DA1F2]">
-                    {user?.email?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              href="/#features"
+              className="text-sm font-medium text-[#CCCCCC] hover:text-[#1DA1F2] transition-colors"
+            >
+              Features
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-[#CCCCCC] hover:text-[#1DA1F2] transition-colors">
+              Pricing
+            </Link>
+            <Link href="/agent" className="text-sm font-medium text-[#CCCCCC] hover:text-[#1DA1F2] transition-colors">
+              Agent
+            </Link>
+            <Link href="/#faq" className="text-sm font-medium text-[#CCCCCC] hover:text-[#1DA1F2] transition-colors">
+              FAQ
+            </Link>
+          </nav>
+
+          {/* User Avatar or Sign In Button */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage
+                      src={user.user_metadata?.avatar_url || "/placeholder.svg"}
+                      alt={user.email || "User"}
+                    />
+                    <AvatarFallback className="bg-[#1DA1F2]/20 text-[#1DA1F2]">
+                      {user.email ? user.email.charAt(0).toUpperCase() : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-[#1A1A1F] border-[#333339]" align="end" forceMount>
+                <div className="flex flex-col space-y-1 p-2">
+                  <p className="text-sm font-medium leading-none text-white">{user.email || "Unknown User"}</p>
+                  <p className="text-xs leading-none text-[#9CA3AF]">Premium Account</p>
+                </div>
+                <DropdownMenuSeparator className="bg-[#333339]" />
+                <DropdownMenuItem asChild className="text-[#CCCCCC] hover:bg-[#2A2A2F] hover:text-white">
+                  <Link href="/dashboard" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-[#333339]" />
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="cursor-pointer text-[#CCCCCC] hover:bg-[#2A2A2F] hover:text-white"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/sign-in">
+              <Button className="bg-gradient-to-r from-[#1DA1F2] to-[#5ab9f5] text-white border-none hover:opacity-90 transition-opacity">
+                Sign In
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-[#1A1A1F] border-[#333339]" align="end" forceMount>
-              <div className="flex flex-col space-y-1 p-2">
-                <p className="text-sm font-medium leading-none text-white">{user?.email}</p>
-                <p className="text-xs leading-none text-[#9CA3AF]">Premium Account</p>
-              </div>
-              <DropdownMenuSeparator className="bg-[#333339]" />
-              <DropdownMenuItem asChild className="text-[#CCCCCC] hover:bg-[#2A2A2F] hover:text-white">
-                <Link href="/dashboard" className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Dashboard</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-[#333339]" />
-              <DropdownMenuItem
-                onClick={handleSignOut}
-                className="cursor-pointer text-[#CCCCCC] hover:bg-[#2A2A2F] hover:text-white"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </Link>
+          )}
         </div>
       </header>
 

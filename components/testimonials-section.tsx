@@ -65,7 +65,7 @@ export default function TestimonialsSection() {
             </div>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Our Users Say</h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Join thousands of satisfied users who have transformed their Twitter presence with Tweezy.
+              Join +480 of satisfied users who have transformed their Twitter presence with Tweezy.
             </p>
           </motion.div>
         </div>

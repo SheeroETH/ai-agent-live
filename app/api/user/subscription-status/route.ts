@@ -2,11 +2,10 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
   try {
-    // For demo purposes, return a mock subscription status
-    // In production, this would connect to your Supabase database
+    // Mock subscription status - in a real app this would check a database
     const subscriptionStatus = {
       planConfirmed: true,
-      plan: "free", // Default to free plan for demo
+      plan: "free", // Default to free plan
     }
 
     return NextResponse.json(subscriptionStatus)

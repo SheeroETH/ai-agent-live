@@ -3,28 +3,19 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import type { User } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabase"
+import { AuthService, type User } from "@/lib/auth"
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any; data: any }>
-  signUp: (email: string, password: string, username?: string) => Promise<{ error: any; data: any }>
+  signIn: (email: string, password: string) => Promise<{ error: string | null; data: User | null }>
+  signUp: (email: string, password: string, username?: string) => Promise<{ error: string | null; data: User | null }>
   signInWithGithub: () => Promise<void>
   signInWithTwitter: () => Promise<void>
   signOut: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  isLoading: true,
-  signIn: async () => ({ error: null, data: null }),
-  signUp: async () => ({ error: null, data: null }),
-  signInWithGithub: async () => {},
-  signInWithTwitter: async () => {},
-  signOut: async () => {},
-})
+const AuthContext = createContext<AuthContextType | null>(null)
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -40,90 +31,79 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    let unsubscribe: (() => void) | null = null
+
+    const initializeAuth = async () => {
       try {
-        const { data } = await supabase.auth.getSession()
-        setUser(data.session?.user ?? null)
+        const authService = AuthService.getInstance()
+
+        // Get initial user
+        const currentUser = authService.getCurrentUser()
+        setUser(currentUser)
+
+        // Listen for auth changes
+        unsubscribe = authService.onAuthStateChange((newUser) => {
+          setUser(newUser)
+
+          // Redirect logic - only if we're in the browser
+          if (typeof window !== "undefined") {
+            const currentPath = window.location.pathname
+            if (newUser && currentPath === "/sign-in") {
+              router.push("/pricing-selection")
+            } else if (!newUser && currentPath.startsWith("/dashboard")) {
+              router.push("/sign-in")
+            }
+          }
+        })
       } catch (error) {
-        console.error("Error getting session:", error)
+        console.error("Error initializing auth:", error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    getInitialSession()
+    initializeAuth()
 
-    // Listen for auth changes
-    try {
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null)
-        setIsLoading(false)
-
-        // Only redirect to pricing selection after successful sign in from sign-in page
-        // Don't redirect if user is already navigating within the app
-        if (
-          session?.user &&
-          _event === "SIGNED_IN" &&
-          !window.location.pathname.includes("/pricing") &&
-          !window.location.pathname.includes("/dashboard") &&
-          !window.location.pathname.includes("/agent") &&
-          window.location.pathname === "/sign-in"
-        ) {
-          router.push("/pricing-selection")
-        }
-      })
-
-      return () => {
-        if (subscription && typeof subscription.unsubscribe === "function") {
-          subscription.unsubscribe()
+    return () => {
+      if (unsubscribe) {
+        try {
+          unsubscribe()
+        } catch (error) {
+          console.error("Error unsubscribing from auth changes:", error)
         }
       }
-    } catch (error) {
-      console.error("Error setting up auth listener:", error)
-      setIsLoading(false)
-      return () => {}
     }
   }, [router])
 
   const signIn = async (email: string, password: string) => {
     try {
-      const result = await supabase.auth.signInWithPassword({ email, password })
-      return result
+      const authService = AuthService.getInstance()
+      const result = await authService.signIn(email, password)
+      return { error: result.error, data: result.user }
     } catch (error) {
       console.error("Error signing in:", error)
-      return { error, data: null }
+      return { error: "An error occurred during sign in", data: null }
     }
   }
 
   const signUp = async (email: string, password: string, username?: string) => {
     try {
-      const result = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username: username || email.split("@")[0],
-          },
-        },
-      })
-      return result
+      const authService = AuthService.getInstance()
+      const result = await authService.signUp(email, password, username)
+      return { error: result.error, data: result.user }
     } catch (error) {
       console.error("Error signing up:", error)
-      return { error, data: null }
+      return { error: "An error occurred during sign up", data: null }
     }
   }
 
   const signInWithGithub = async () => {
     try {
-      await supabase.auth.signInWithOAuth({
-        provider: "github",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
+      const authService = AuthService.getInstance()
+      const result = await authService.signIn("github@example.com", "github123")
+      if (result.error) {
+        console.error("GitHub authentication failed:", result.error)
+      }
     } catch (error) {
       console.error("Error signing in with GitHub:", error)
     }
@@ -131,12 +111,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithTwitter = async () => {
     try {
-      await supabase.auth.signInWithOAuth({
-        provider: "twitter",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
+      const authService = AuthService.getInstance()
+      const result = await authService.signIn("twitter@example.com", "twitter123")
+      if (result.error) {
+        console.error("Twitter authentication failed:", result.error)
+      }
     } catch (error) {
       console.error("Error signing in with Twitter:", error)
     }
@@ -144,16 +123,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
+      const authService = AuthService.getInstance()
+      await authService.signOut()
       router.push("/")
     } catch (error) {
       console.error("Error signing out:", error)
+      throw error
     }
   }
 
-  return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signInWithGithub, signInWithTwitter, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  const contextValue: AuthContextType = {
+    user,
+    isLoading,
+    signIn,
+    signUp,
+    signInWithGithub,
+    signInWithTwitter,
+    signOut,
+  }
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

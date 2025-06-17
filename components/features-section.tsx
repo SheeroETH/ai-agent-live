@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
-import { Bot, BarChart, Clock, Users, MessageSquare, Zap } from "lucide-react"
+import { Bot, BarChart, Clock, MessageSquare, Zap, BarChart3 } from "lucide-react"
 
 const features = [
   {
@@ -22,9 +22,9 @@ const features = [
     description: "Schedule tweets at optimal times to maximize engagement and reach.",
   },
   {
-    icon: <Users className="h-10 w-10 text-blue-500" />,
-    title: "Audience Insights",
-    description: "Understand your audience better with detailed demographic and interest data.",
+    icon: <BarChart3 className="h-10 w-10 text-blue-500" />,
+    title: "Recent Data & Insights",
+    description: "Gain real-time data & news of your target market",
   },
   {
     icon: <MessageSquare className="h-10 w-10 text-blue-500" />,

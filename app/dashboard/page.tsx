@@ -15,51 +15,26 @@ interface SubscriptionStatus {
 export default function DashboardPage() {
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null)
   const [loading, setLoading] = useState(true)
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    const checkSubscriptionStatus = async () => {
-      try {
-        const response = await fetch("/api/user/subscription-status", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+    if (isLoading) return
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const status: SubscriptionStatus = await response.json()
-
-        if (!status.planConfirmed) {
-          router.push("/pricing-selection")
-          return
-        }
-
-        setSubscriptionStatus(status)
-      } catch (error) {
-        console.error("Error checking subscription status:", error)
-        // For demo purposes, set a default status instead of redirecting
-        setSubscriptionStatus({
-          planConfirmed: true,
-          plan: "free",
-        })
-      } finally {
-        setLoading(false)
-      }
+    if (!user) {
+      router.push("/sign-in")
+      return
     }
 
-    if (user) {
-      checkSubscriptionStatus()
-    } else {
-      setLoading(false)
-    }
-  }, [user, router])
+    // Mock subscription status
+    setSubscriptionStatus({
+      planConfirmed: true,
+      plan: "free",
+    })
+    setLoading(false)
+  }, [user, isLoading, router])
 
-  if (loading) {
+  if (isLoading || loading) {
     return (
       <div className="min-h-screen bg-[#0F0F13] flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -68,7 +43,6 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    router.push("/sign-in")
     return null
   }
 

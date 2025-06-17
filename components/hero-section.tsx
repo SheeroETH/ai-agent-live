@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 export default function HeroSection() {
   return (
@@ -11,7 +11,6 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full flex items-center justify-center">
           <div className="absolute w-[600px] h-[600px] rounded-full bg-[#1DA1F2]/5 blur-3xl"></div>
-          <div className="absolute w-[400px] h-[400px] rounded-full bg-purple-600/5 blur-3xl"></div>
         </div>
       </div>
 
@@ -23,6 +22,9 @@ export default function HeroSection() {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
+            <div className="inline-block rounded-lg bg-blue-900/30 border border-blue-500/20 px-3 py-1 text-sm text-blue-300 mb-4">
+              AI Reply Guy
+            </div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -48,33 +50,15 @@ export default function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 mt-12"
           >
-            <Button
-              size="lg"
-              className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity text-lg px-8 py-6 h-auto"
-              href="/agent"
-            >
-              Create My AI Agent
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-purple-500 text-purple-300 hover:bg-purple-900/20 text-lg px-8 py-6 h-auto"
-            >
-              Watch Demo
-            </Button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="mt-24 relative w-full"
-          >
-            <div className="relative w-full max-w-5xl mx-auto aspect-video rounded-lg overflow-hidden border border-[#1DA1F2]/20 glowing-border-blue">
-              <div className="absolute inset-0 bg-gradient-to-br from-black to-[#1DA1F2]/20 flex items-center justify-center">
-                <span className="text-2xl font-bold gradient-text-mixed neon-glow-blue">Tweezy Dashboard</span>
-              </div>
+            <div className="flex gap-3 p-3 bg-gray-900/50 rounded-2xl border border-gray-800">
+              <Input
+                type="email"
+                placeholder="Enter your email address"
+                className="border-0 bg-transparent focus-visible:ring-0 flex-1 text-white placeholder:text-gray-500 text-lg"
+              />
+              <Button className="bg-[#4A9EFF] hover:bg-[#3A8EEF] text-white px-8 py-3 rounded-xl font-semibold">
+                Join Waitlist
+              </Button>
             </div>
           </motion.div>
         </div>

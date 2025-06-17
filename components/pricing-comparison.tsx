@@ -6,30 +6,30 @@ import { Check, X } from "lucide-react"
 const features = [
   {
     name: "AI Twitter Agents",
-    starter: "1 agent",
-    pro: "3 agents",
-    business: "10 agents",
+    starter: "3 agents",
+    pro: "10 agents",
+    business: "30+ agents",
   },
   {
     name: "Automated Replies",
-    starter: "100/month",
-    pro: "Unlimited",
+    starter: "500/month",
+    pro: "2,000/month",
+    business: "10,000+/month",
+  },
+  {
+    name: "Track Hashtags / Mentions",
+    starter: "3 targets",
+    pro: "10 targets",
     business: "Unlimited",
   },
   {
-    name: "Content Scheduling",
-    starter: "5 posts/day",
-    pro: "20 posts/day",
-    business: "Unlimited",
+    name: "Tone Training Slots (Custom AI Personalities)",
+    starter: "1 tone",
+    pro: "3 tones",
+    business: "10+ tones",
   },
   {
-    name: "Analytics",
-    starter: "Basic",
-    pro: "Advanced",
-    business: "Enterprise",
-  },
-  {
-    name: "Custom AI Personality",
+    name: "Smart Delay & Filters",
     starter: false,
     pro: true,
     business: true,
@@ -42,12 +42,6 @@ const features = [
   },
   {
     name: "Team Collaboration",
-    starter: false,
-    pro: false,
-    business: true,
-  },
-  {
-    name: "API Access",
     starter: false,
     pro: false,
     business: true,
@@ -87,9 +81,11 @@ export default function PricingComparison() {
             <thead>
               <tr className="border-b border-blue-500/20">
                 <th className="py-4 px-6 text-left">Features</th>
-                <th className="py-4 px-6 text-center">Starter</th>
-                <th className="py-4 px-6 text-center bg-purple-900/10 border-x border-purple-500/20">Pro</th>
-                <th className="py-4 px-6 text-center">Business</th>
+                <th className="py-4 px-6 text-center">Starter ($16/mo)</th>
+                <th className="py-4 px-6 text-center bg-purple-900/10 border-x border-purple-500/20">
+                  Growth Hacker ($39/mo)
+                </th>
+                <th className="py-4 px-6 text-center">Agency ($99/mo)</th>
               </tr>
             </thead>
             <tbody>

@@ -35,7 +35,7 @@ export default function Header() {
   const navItems = [
     { name: "Features", href: pathname === "/" ? "#features" : "/#features" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Agent", href: "/agent" },
+    { name: "Agent", href: pathname === "/" ? "#demo" : "/#demo" },
     { name: "FAQ", href: pathname === "/" ? "#faq" : "/#faq" },
   ]
 
@@ -70,7 +70,7 @@ export default function Header() {
             transition={{ duration: 0.5 }}
             className="text-2xl font-bold gradient-text-mixed neon-glow-blue"
           >
-            Tweezy
+            TweezyAI
           </motion.div>
         </Link>
 
@@ -88,8 +88,7 @@ export default function Header() {
                 <Link
                   href={item.href}
                   className={`relative px-4 py-2 rounded-md text-sm font-medium text-white hover:text-[#1DA1F2] transition-colors group ${
-                    (pathname === "/pricing" && item.name === "Pricing") ||
-                    (pathname === "/agent" && item.name === "Agent")
+                    (pathname === "/pricing" && item.name === "Pricing") || (item.name === "Agent" && pathname === "/")
                       ? "text-[#1DA1F2]"
                       : ""
                   }`}
@@ -98,7 +97,7 @@ export default function Header() {
                   <span
                     className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#1DA1F2] to-[#5ab9f5] transform transition-transform duration-300 ${
                       (pathname === "/pricing" && item.name === "Pricing") ||
-                      (pathname === "/agent" && item.name === "Agent")
+                      (item.name === "Agent" && pathname === "/")
                         ? "scale-x-100"
                         : "scale-x-0 group-hover:scale-x-100"
                     }`}
@@ -155,7 +154,7 @@ export default function Header() {
                   size="sm"
                   className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
                 >
-                  Sign In
+                  Join Waitlist
                 </Button>
               </Link>
             </motion.div>
@@ -192,8 +191,7 @@ export default function Header() {
                   key={item.name}
                   href={item.href}
                   className={`text-sm font-medium py-2 text-white hover:text-[#1DA1F2] transition-colors ${
-                    (pathname === "/pricing" && item.name === "Pricing") ||
-                    (pathname === "/agent" && item.name === "Agent")
+                    (pathname === "/pricing" && item.name === "Pricing") || (item.name === "Agent" && pathname === "/")
                       ? "text-[#1DA1F2]"
                       : ""
                   }`}
