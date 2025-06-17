@@ -12,6 +12,7 @@ export default function HeroSection() {
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +38,8 @@ export default function HeroSection() {
       })
 
       if (response.ok) {
+        setShowSuccess(true)
+        setTimeout(() => setShowSuccess(false), 3000) // Hide after 3 seconds
         toast({
           title: "🎉 Success!",
           description: "You've been added to the waitlist!",
@@ -99,7 +102,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 mt-12"
+            className="flex flex-col items-center gap-4 mt-12"
           >
             <form onSubmit={handleSubmit} className="flex gap-3 p-3 bg-gray-900/50 rounded-2xl border border-gray-800">
               <Input
@@ -119,6 +122,16 @@ export default function HeroSection() {
                 {isSubmitting ? "Joining..." : "Join Waitlist"}
               </Button>
             </form>
+            {showSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 text-center"
+              >
+                ✅ Successfully added to waitlist!
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>
