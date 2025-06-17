@@ -13,6 +13,7 @@ const pricingPlans = [
     price: "$16",
     period: "/month",
     features: [
+      "1 Twitter Account",
       "3 AI Twitter Agents",
       "500 automated replies/month",
       "Track 3 hashtags/mentions",
@@ -28,6 +29,7 @@ const pricingPlans = [
     price: "$39",
     period: "/month",
     features: [
+      "3 Twitter Accounts",
       "10 AI Twitter Agents",
       "2,000 automated replies/month",
       "Track 10 hashtags/mentions",
@@ -46,6 +48,7 @@ const pricingPlans = [
     price: "$99",
     period: "/month",
     features: [
+      "10 Twitter Accounts",
       "30+ AI Twitter Agents",
       "10,000+ automated replies/month",
       "Unlimited hashtag/mention tracking",

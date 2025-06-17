@@ -149,14 +149,18 @@ export default function Header() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Link href="/sign-in">
-                <Button
-                  size="sm"
-                  className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
-                >
-                  Join Waitlist
-                </Button>
-              </Link>
+              <Button
+                size="sm"
+                className="btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
+                onClick={() => {
+                  const heroSection = document.getElementById("hero") || document.querySelector("section")
+                  if (heroSection) {
+                    heroSection.scrollIntoView({ behavior: "smooth" })
+                  }
+                }}
+              >
+                Join Waitlist
+              </Button>
             </motion.div>
           )}
 
@@ -233,11 +237,18 @@ export default function Header() {
                     </Button>
                   </>
                 ) : (
-                  <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-                    <Button className="w-full btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity">
-                      Sign In
-                    </Button>
-                  </Link>
+                  <Button
+                    className="w-full btn-dual-gradient text-white border-none hover:opacity-90 transition-opacity"
+                    onClick={() => {
+                      setIsOpen(false)
+                      const heroSection = document.getElementById("hero") || document.querySelector("section")
+                      if (heroSection) {
+                        heroSection.scrollIntoView({ behavior: "smooth" })
+                      }
+                    }}
+                  >
+                    Join Waitlist
+                  </Button>
                 )}
               </div>
             </nav>

@@ -1,10 +1,61 @@
 "use client"
 
+import type React from "react"
+
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function HeroSection() {
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email || !email.includes("@")) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "🎉 Success!",
+          description: "You've been added to the waitlist!",
+        })
+        setEmail("")
+      } else {
+        throw new Error("Failed to submit")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <section className="w-full py-32 md:py-40 lg:py-52 relative overflow-hidden">
       {/* Background elements */}
@@ -50,16 +101,24 @@ export default function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 mt-12"
           >
-            <div className="flex gap-3 p-3 bg-gray-900/50 rounded-2xl border border-gray-800">
+            <form onSubmit={handleSubmit} className="flex gap-3 p-3 bg-gray-900/50 rounded-2xl border border-gray-800">
               <Input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 className="border-0 bg-transparent focus-visible:ring-0 flex-1 text-white placeholder:text-gray-500 text-lg"
+                required
+                disabled={isSubmitting}
               />
-              <Button className="bg-[#4A9EFF] hover:bg-[#3A8EEF] text-white px-8 py-3 rounded-xl font-semibold">
-                Join Waitlist
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-[#4A9EFF] hover:bg-[#3A8EEF] text-white px-8 py-3 rounded-xl font-semibold disabled:opacity-50"
+              >
+                {isSubmitting ? "Joining..." : "Join Waitlist"}
               </Button>
-            </div>
+            </form>
           </motion.div>
         </div>
       </div>

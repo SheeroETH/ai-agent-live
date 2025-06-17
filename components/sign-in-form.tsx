@@ -8,9 +8,8 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Github, Twitter, Wallet, Eye, EyeOff } from "lucide-react"
+import { ArrowLeft, Github, Twitter, Eye, EyeOff } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 
 export default function SignInForm() {
@@ -59,17 +58,6 @@ export default function SignInForm() {
     } catch (err: any) {
       console.error("Twitter sign in error:", err)
       setError("Failed to authenticate with Twitter. Please try again.")
-    }
-  }
-
-  const handleWalletSignIn = async () => {
-    try {
-      // Wallet authentication would be implemented here
-      console.log("Wallet sign in clicked")
-      setError("Wallet authentication is not yet implemented.")
-    } catch (err: any) {
-      console.error("Wallet sign in error:", err)
-      setError("Failed to connect wallet. Please try again.")
     }
   }
 
@@ -123,103 +111,57 @@ export default function SignInForm() {
 
           {error && <div className="mb-4 p-3 bg-red-900/30 border border-red-800 rounded-md text-red-200">{error}</div>}
 
-          <Tabs defaultValue="email" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="email" className="data-[state=active]:bg-[#1DA1F2]/20">
-                <span className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                  Email
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="wallet" className="data-[state=active]:bg-[#1DA1F2]/20">
-                <span className="flex items-center">
-                  <Wallet className="h-5 w-5 mr-2" />
-                  Wallet
-                </span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="email" className="mt-0">
-              <form onSubmit={handleSignIn} className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="0xMoonRock@jja.e"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="bg-gray-900/50 border-gray-800 focus:border-[#1DA1F2]"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      <Link href="/forgot-password" className="text-sm text-[#1DA1F2] hover:text-[#1DA1F2]/80">
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="bg-gray-900/50 border-gray-800 focus:border-[#1DA1F2] pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white border-none"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Signing in..." : "Sign In with Email"}
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="wallet" className="mt-0">
-              <div className="text-center p-8">
-                <Wallet className="h-12 w-12 mx-auto mb-4 text-[#1DA1F2]" />
-                <h3 className="text-lg font-medium mb-2">Connect Your Wallet</h3>
-                <p className="text-gray-400 mb-6">Connect your crypto wallet to sign in securely without a password.</p>
-                <Button
-                  onClick={handleWalletSignIn}
-                  className="w-full bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white border-none"
-                  disabled
-                >
-                  Connect Wallet (Coming Soon)
-                </Button>
+          <form onSubmit={handleSignIn} className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-gray-900/50 border-gray-800 focus:border-[#1DA1F2]"
+                />
               </div>
-            </TabsContent>
-          </Tabs>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Link href="/forgot-password" className="text-sm text-[#1DA1F2] hover:text-[#1DA1F2]/80">
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="bg-gray-900/50 border-gray-800 focus:border-[#1DA1F2] pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white border-none"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Signing in..." : "Sign In"}
+              </Button>
+            </div>
+          </form>
 
           <div className="mt-6 relative">
             <div className="absolute inset-0 flex items-center">
