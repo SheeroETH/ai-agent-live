@@ -15,20 +15,20 @@ export default function HeroSection() {
   const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!email || !email.includes("@")) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-
     try {
+      e.preventDefault()
+
+      if (!email || !email.includes("@")) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        })
+        return
+      }
+
+      setIsSubmitting(true)
+
       const response = await fetch("/api/waitlist", {
         method: "POST",
         headers: {
@@ -37,18 +37,21 @@ export default function HeroSection() {
         body: JSON.stringify({ email }),
       })
 
+      const result = await response.json()
+
       if (response.ok) {
         setShowSuccess(true)
-        setTimeout(() => setShowSuccess(false), 3000) // Hide after 3 seconds
+        setTimeout(() => setShowSuccess(false), 3000)
         toast({
           title: "🎉 Success!",
           description: "You've been added to the waitlist!",
         })
         setEmail("")
       } else {
-        throw new Error("Failed to submit")
+        throw new Error(result?.error || "Failed to submit")
       }
     } catch (error) {
+      console.error("Form submission error:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -108,7 +111,11 @@ export default function HeroSection() {
               <Input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  if (e?.target?.value !== undefined) {
+                    setEmail(e.target.value)
+                  }
+                }}
                 placeholder="Enter your email address"
                 className="border-0 bg-transparent focus-visible:ring-0 flex-1 text-white placeholder:text-gray-500 text-lg"
                 required
